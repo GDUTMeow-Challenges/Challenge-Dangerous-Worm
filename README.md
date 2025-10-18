@@ -23,4 +23,8 @@ Luminoria 的单位给他配了一台工作电脑，虽然它的配置很高，�
 3. 攻击者在电脑上留下的加密密钥是什么？（不带空格的十六进制，全大写）
 4. Luminoria 的重要数据文件中有一段非常重要的密钥，请你找到它
 
-作答的时候需要将四个问题的答案用下划线连接后，套上 `flag{}` 头进行作答，假设答案为 `ExampleAccount` `CVE-2025-8088` `AABBCCDD` `thiS-iS-4_t0k3n`，那么最后作答的答案应该为 `flag{10.0.0.8_ExampleAccount_CVE-2025-8088_AABBCCDD_thiS-iS-4_t0k3n}`
+作答的时候需要将四个问题的答案用下划线连接后，套上 `flag{}` 头进行作答，假设答案为 `ExampleAccount` `CVE-2025-8088` `AABBCCDD` `thiS-iS-4_t0k3n`，那么最后作答的答案应该为 `flag{ExampleAccount_CVE-2025-8088_AABBCCDD_thiS-iS-4_t0k3n}`
+
+附件下载地址：https://lumin3-my.sharepoint.com/:u:/g/personal/ctfbucket_lumin3_onmicrosoft_com/EVnCOBzeYXBImI8JBaDCwKUBWlQCZHLbSgPEfU9F0ftA2Q?e=GnXrWr
+
+解压密码：`508e5a47-c8e9-4a40-8b72-628931492b32`
