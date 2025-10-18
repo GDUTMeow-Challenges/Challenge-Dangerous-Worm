@@ -8,4 +8,5 @@ dependencies = [
     "cffi==1.15.0",
     "pycryptodome==3.14.1",
     "pyinstaller>=6.16.0",
+    "pyz>=0.4.3",
 ]

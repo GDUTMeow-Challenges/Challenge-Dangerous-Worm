@@ -8,3 +8,10 @@ wheels/
 
 # Virtual environments
 .venv
+
+*.raw
+*.json
+*.dmp
+*.paff
+*.vmem
+*.7z

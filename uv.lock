@@ -60,6 +60,7 @@ dependencies = [
     { name = "cffi" },
     { name = "pycryptodome" },
     { name = "pyinstaller" },
+    { name = "pyz" },
 ]
 
 [package.metadata]
@@ -67,6 +68,7 @@ requires-dist = [
     { name = "cffi", specifier = "==1.15.0" },
     { name = "pycryptodome", specifier = "==3.14.1" },
     { name = "pyinstaller", specifier = ">=6.16.0" },
+    { name = "pyz", specifier = ">=0.4.3" },
 ]
 
 [[package]]
@@ -209,6 +211,12 @@ sdist = { url = "https://files.pythonhosted.org/packages/85/9f/01a1a99704853cb63
 wheels = [
     { url = "https://files.pythonhosted.org/packages/de/3d/8161f7711c017e01ac9f008dfddd9410dff3674334c233bde66e7ba65bbf/pywin32_ctypes-0.2.3-py3-none-any.whl", hash = "sha256:8a1513379d709975552d202d942d9837758905c8d01eb82b8bcc30918929e7b8", size = 30756, upload_time = "2024-08-14T10:15:33.187Z" },
 ]
+
+[[package]]
+name = "pyz"
+version = "0.4.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/44/03/9d567395d2c900b6d07cd117b25fc0acadeb169a64ae6535771f33906854/pyz-0.4.3.tar.gz", hash = "sha256:edbf8459d5ab11ea32752cbd49fda75cab00181a3dee965372e20d94d2230c63", size = 4655, upload_time = "2017-12-21T02:59:50.485Z" }
 
 [[package]]
 name = "setuptools"
