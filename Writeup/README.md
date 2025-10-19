@@ -14,7 +14,7 @@ Luminoria 的单位给他配了一台工作电脑，虽然它的配置很高，�
 
 在 2114 年 5 月 12 日（周五），Luminoria 下班后，没有将电脑关机，而是进行了锁屏以后，就直接离开公司了。因为攻击者对 Luminoria 的公司非常的熟悉，所以他选择在大家都下班以后，发动蠕虫病毒进行内网横向渗透攻击。好巧不巧，Luminoria 的电脑中招了。
 
-2114 年 5 月 14 日（周一），Luminoria 回到了公司，发现自己放在桌面上的重要数据文件变成乱码了，这可把 Luminoria 急坏了！
+2114 年 5 月 14 日（周一），Luminoria 回到了公司，发现自己放在**桌面**上的重要数据文件变成乱码了，这可把 Luminoria 急坏了！
 
 你是公司的应急响应专家，现在拿到了 Luminoria 电脑在文件被加密期间的内存镜像。IT团队已经定位到攻击流量来自 Paff 的电脑，但他们需要你来分析 Luminoria 电脑上究竟发生了什么。你需要从内存中找出加密程序运行时留下的关键证据，特别是用于加密文件的密钥，以便尝试恢复被锁定的文件。
 
@@ -23,9 +23,11 @@ Luminoria 的单位给他配了一台工作电脑，虽然它的配置很高，�
 3. 攻击者在电脑上留下的加密密钥是什么？（不带空格的十六进制，全大写）
 4. Luminoria 的重要数据文件中有一段非常重要的密钥，请你找到它
 
-作答的时候需要将四个问题的答案用下划线连接后，套上 `flag{}` 头进行作答，假设答案为 `ExampleAccount` `CVE-2025-8088` `AABBCCDD` `thiS-iS-4_t0k3n`，那么最后作答的答案应该为 `flag{10.0.0.8_ExampleAccount_CVE-2025-8088_AABBCCDD_thiS-iS-4_t0k3n}`
+作答的时候需要将四个问题的答案用下划线连接后，套上 `flag{}` 头进行作答，假设答案为 `ExampleAccount` `CVE-2025-8088` `AABBCCDD` `thiS-iS-4_t0k3n`，那么最后作答的答案应该为 `flag{ExampleAccount_CVE-2025-8088_AABBCCDD_thiS-iS-4_t0k3n}`
 
-> 被加密的文件是随附件给的两个 `.paff` 文件
+附件下载地址：https://lumin3-my.sharepoint.com/:u:/g/personal/ctfbucket_lumin3_onmicrosoft_com/ESvFKyMjrtBDncKofvGFL_gB_VOhpABYxx0XI5n19lxnyw?e=HH7QLJ
+
+解压密码：`508e5a47-c8e9-4a40-8b72-628931492b32`
 
 ## 解题
 
@@ -41,7 +43,7 @@ Luminoria 的单位给他配了一台工作电脑，虽然它的配置很高，�
 
 我们得知道账户从哪里获取，在内存取证中，我们一般通过注册表获取账户
 
-而这个过程通常用 MemProcFS，因为它的注册表注册表数据比较全。在 MemProcFS 中，你可以直接打开 M 盘然后看，我这里用工具。我们选择注册表时间线功能，直接搜索 `HKLM\SAM\SAM\Domains\Account\Users\Names`，后面的就是用户名了
+直接搜索 `HKLM\SAM\SAM\Domains\Account\Users\Names`，后面的就是用户名了
 
 ![](https://cdn.bili33.top/gh/GDUTMeow/Challenge-Dangerous-Worm/Writeup/img/LovelymemLuxe_3GN2VZa27O.png)
 
@@ -318,7 +320,7 @@ print(real_iv.hex())
 
 在代码里面，我们可以看到加密后的文件会被加上 `.paff` 的文件后缀，所以直接搜后缀，发现桌面上有两个被加密的文件
 
-至此，我们拿到了所有加密用的东西，可以去解密了，我们把两个加密后的文件拿出来，丢进赛博厨子
+至此，我们拿到了所有加密用的东西，可以去解密了，我们把两个加密后的文件拿出来，题目里面说到文件在桌面，在桌面可以看到一个 `Secr3t.db.paff` 和一个 `Security.txt.paff`，都拎出来
 
 因为加密之后还加了一个 `PAFF` 魔术头才保存的，所以要先去掉
 
