@@ -30,3 +30,12 @@ Luminoria 的单位给他配了一台工作电脑，虽然它的配置很高，�
 附件下载地址：https://lumin3-my.sharepoint.com/:u:/g/personal/ctfbucket_lumin3_onmicrosoft_com/EVnCOBzeYXBImI8JBaDCwKUBWlQCZHLbSgPEfU9F0ftA2Q?e=GnXrWr
 
 解压密码：`508e5a47-c8e9-4a40-8b72-628931492b32`
+
+<details>  
+    <summary>可能的提示</summary>  
+    <ul>
+        <li>不要死磕第二问！！！</li>
+        <li>本题与 Paff 的电脑无关</li>
+        <li>你可能需要活用多种内存取证软件</li>
+    </ul>
+</details>
