@@ -45,7 +45,7 @@ Luminoria 的单位给他配了一台工作电脑，虽然它的配置很高，�
 
 直接搜索 `HKLM\SAM\SAM\Domains\Account\Users\Names`，后面的就是用户名了
 
-![](https://cdn.bili33.top/gh/GDUTMeow/Challenge-Dangerous-Worm/Writeup/img/LovelymemLuxe_3GN2VZa27O.png)
+![](https://cdn.bili33.top/gh/GDUTMeow-Challenges/Challenge-Dangerous-Worm/Writeup/img/LovelymemLuxe_3GN2VZa27O.png)
 
 这里可以看到有 5 个用户
 
@@ -95,7 +95,7 @@ $ python -m volatility3 -f vuln10.vmem filescan --output-dir output
 
 既然加密的东西是个程序，那我们可以先搜一下 `.exe`，然后能看到有个 `\\Users\\Luminoria\\AppData\\Roaming\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\安全中心.exe` 很可疑
 
-![](https://cdn.bili33.top/gh/GDUTMeow/Challenge-Dangerous-Worm/Writeup/img/LovelymemLuxe_JIKR7ebLE1.png)
+![](https://cdn.bili33.top/gh/GDUTMeow-Challenges/Challenge-Dangerous-Worm/Writeup/img/LovelymemLuxe_JIKR7ebLE1.png)
 
 给它 dump 出来
 
@@ -106,11 +106,11 @@ $ python.exe -m volatility3 -f vuln10.vmem -o output windows.dumpfiles --virtadd
 
 得到两个文件
 
-![](https://cdn.bili33.top/gh/GDUTMeow/Challenge-Dangerous-Worm/Writeup/img/explorer_QI7xQZAfCB.png)
+![](https://cdn.bili33.top/gh/GDUTMeow-Challenges/Challenge-Dangerous-Worm/Writeup/img/explorer_QI7xQZAfCB.png)
 
 用 DIE 看一下两个文件，发现大一点的那个会被识别出来是 pyinstaller 打包的程序
 
-![](https://cdn.bili33.top/gh/GDUTMeow/Challenge-Dangerous-Worm/Writeup/img/die_NlcagM2b95.png)
+![](https://cdn.bili33.top/gh/GDUTMeow-Challenges/Challenge-Dangerous-Worm/Writeup/img/die_NlcagM2b95.png)
 
 先用 pyinstxtractor 转成 pyc
 
@@ -331,13 +331,13 @@ with open(file_path + ".paff", "wb") as f:
 
 然后在 `Secr3t.db.paff` 解密后可以看到有一个 `My Token is:`，后面的 UUID 就是密钥了：`303c535a-1a26-4dbc-8034-64be01627d78`
 
-![](https://cdn.bili33.top/gh/GDUTMeow/Challenge-Dangerous-Worm/Writeup/img/msedge_xB94ZYWq7t.png)
+![](https://cdn.bili33.top/gh/GDUTMeow-Challenges/Challenge-Dangerous-Worm/Writeup/img/msedge_xB94ZYWq7t.png)
 
 ### 验证 CVE 编号
 
 给的文件中还有一个 `Security.txt.paff`，我们一起拿去解码看看
 
-![](https://cdn.bili33.top/gh/GDUTMeow/Challenge-Dangerous-Worm/Writeup/img/msedge_tV9JLG5qqs.png)
+![](https://cdn.bili33.top/gh/GDUTMeow-Challenges/Challenge-Dangerous-Worm/Writeup/img/msedge_tV9JLG5qqs.png)
 
 可以看到 CVE 编号是 `CVE-2017-0144`，正好与 MS17-010 吻合，所以最后的 CVE 编号为 `CVE-2017-0144`
 
