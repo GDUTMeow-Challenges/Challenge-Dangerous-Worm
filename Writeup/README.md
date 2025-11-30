@@ -322,12 +322,14 @@ print(real_iv.hex())
 
 至此，我们拿到了所有加密用的东西，可以去解密了，我们把两个加密后的文件拿出来，题目里面说到文件在桌面，在桌面可以看到一个 `Secr3t.db.paff` 和一个 `Security.txt.paff`，都拎出来
 
-因为加密之后还加了一个 `PAFF` 魔术头才保存的，所以要先去掉
+根据下面代码
 
 ```python
 with open(file_path + ".paff", "wb") as f:
     f.write(b"PAFF" + encrypted_data)
 ```
+
+加密之后还加了一个 `PAFF` 魔术头才保存的，所以要先去掉
 
 然后在 `Secr3t.db.paff` 解密后可以看到有一个 `My Token is:`，后面的 UUID 就是密钥了：`303c535a-1a26-4dbc-8034-64be01627d78`
 
